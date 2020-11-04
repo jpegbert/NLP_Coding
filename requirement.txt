@@ -1,3 +1,5 @@
 pip install -i https://pypi.tuna.tsinghua.edu.cn/simple/ jieba
 pip install -i https://pypi.tuna.tsinghua.edu.cn/simple/ nltk
 pip install -i https://pypi.tuna.tsinghua.edu.cn/simple/ gensim
+pip install -i https://pypi.tuna.tsinghua.edu.cn/simple/ pyhanlp
+
