@@ -3,6 +3,7 @@ from gensim import models
 
 
 # https://www.jianshu.com/p/f3b92124cd2b
+# https://mp.weixin.qq.com/s/CMSkbJlhGMbF5gXP3NndHQ
 
 corpus = [
     'this is the first document',

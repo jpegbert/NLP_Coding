@@ -1,6 +1,7 @@
 from collections import Counter
 import math
 
+# https://mp.weixin.qq.com/s/CMSkbJlhGMbF5gXP3NndHQ
 
 corpus = [
     'this is the first document',
