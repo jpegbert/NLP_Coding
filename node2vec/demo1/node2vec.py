@@ -35,16 +35,12 @@ def load_graph(filename):
 def preprocess_transition_probs(g, p=1, q=1):
     alias_nodes, alias_edges = {}, {}
     for node in g.nodes():
-        print("--------------------")
-        print("preprocess_transition_probs node", node, "sorted(g.neighbors(node)): ",  sorted(g.neighbors(node)))
         probs = [g[node][nei]['weight'] for nei in sorted(g.neighbors(node))]
         norm_const = sum(probs)
         norm_probs = [float(prob) / norm_const for prob in probs]
-        print("probs: ", probs, "norm_const: ", norm_const, "norm_probs: ", norm_probs)
         alias_nodes[node] = get_alias_nodes(norm_probs)
     
     for edge in g.edges():
-        print("edge[0], edge[1]", edge[0], edge[1], edge)
         alias_edges[edge] = get_alias_edges(g, edge[0], edge[1], p, q)
         alias_edges[(edge[1], edge[0])] = get_alias_edges(g, edge[1], edge[0], p, q)
 
@@ -69,19 +65,15 @@ def get_alias_nodes(probs):
     a, b = np.zeros(l), np.zeros(l, dtype=np.int)
     small, large = [], []
 
-    print("get_alias_nodes", "a: ", a, "b: ", b, "l: ", l)
-    print("get_alias_nodes: probs: ", probs)
     for i, prob in enumerate(probs):
         a[i] = l * prob
         if a[i] < 1.0:
             small.append(i)
         else:
             large.append(i)
-    print("get_alias_nodes", "a: ", a, "b: ", b, "small: ", small, "large: ", large)
 
     while small and large:
         sma, lar = small.pop(), large.pop()
-        print("get_alias_nodes", "sma: ", sma, "lar: ", lar)
         b[sma] = lar
         a[lar] += a[sma] - 1.0
         if a[lar] < 1.0:
@@ -100,7 +92,6 @@ def node2vec_walk(g, start, alias_nodes, alias_edges, walk_length=30):
             if len(path) == 1:
                 l = len(alias_nodes[node][0])
                 idx = int(np.floor(np.random.rand() * l))
-                print("---l: ", l, "idx: ", idx)
                 if np.random.rand() < alias_nodes[node][1][idx]:
                     path.append(neis[idx])
                 else:
