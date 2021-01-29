@@ -1,0 +1,4 @@
+source  target  depth
+geosynchronous satellite    tundra orbit    3
+geosynchronous satellite    polar mount    3
+geosynchronous satellite    satellite television    3
