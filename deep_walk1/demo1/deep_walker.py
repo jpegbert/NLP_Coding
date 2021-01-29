@@ -1,6 +1,6 @@
 import random
 from joblib import Parallel, delayed
-from deep_walk.demo1.util import read_graph_data, partition_num
+from deep_walk1.demo1.util import read_graph_data, partition_num
 
 
 class Deep_Walker:
