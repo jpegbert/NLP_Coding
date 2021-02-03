@@ -21,12 +21,12 @@ LABEL = {
     'Rule_Learning': 6,
     'Theory': 7
 }
-'''
-得到Cora数据集中paper的ID和对应的分类label
-'''
 
 
 def load_features(filename):
+    """
+    得到Cora数据集中paper的ID和对应的分类label
+    """
     ids, labels = [], []
     with open(filename, 'r') as f:
         line = f.readline()
@@ -40,12 +40,10 @@ def load_features(filename):
         return ids, labels
 
 
-'''
-根据互引用的关系构造有向图
-'''
-
-
 def load_graph(filename, id_list):
+    """
+    根据互引用的关系构造有向图
+    """
     if directed:
         g = nx.DiGraph()
     else:
@@ -121,7 +119,7 @@ def get_alias_nodes(probs):
         sma, lar = small.pop(), large.pop()
         b[sma] = lar
         # 更新概率值
-        a[lar] += a[sma] - 1.0
+        a[lar] += a[sma] - 1.0 # 更好理解的应该写成 a[lar] = a[lar] - (1.0 - a[sma])
         if a[lar] < 1.0:
             small.append(lar)
         else:
@@ -157,66 +155,69 @@ def node2vec_walk(g, start, alias_nodes, alias_edges, walk_length=30):
     return path
 
 
-edge_path = 'data/cora/cora.content'
-label_path = 'data/cora/cora.cites'
-model_path = './node2vec.model'
+def main():
+    edge_path = 'data/cora/cora.content'
+    label_path = 'data/cora/cora.cites'
+    model_path = './node2vec.model'
 
-# load feature and adjacent matrix from file
-id_list, labels = load_features(edge_path)
-g = load_graph(label_path, id_list)  # print(g)
+    # load feature and adjacent matrix from file
+    id_list, labels = load_features(edge_path)
+    g = load_graph(label_path, id_list)  # print(g)
 
-for node in id_list:
-    if not g.has_node(node):
-        g.add_node(node)
+    for node in id_list:
+        if not g.has_node(node):
+            g.add_node(node)
 
-if os.path.isfile(model_path):
-    model = Word2Vec.load(model_path)
-    print('load model successfully')
-else:
-    alias_nodes, alias_edges = preprocess_transition_probs(g, directed, p, q)
+    if os.path.isfile(model_path):
+        model = Word2Vec.load(model_path)
+        print('load model successfully')
+    else:
+        alias_nodes, alias_edges = preprocess_transition_probs(g, directed, p, q)
 
-    walks = []
-    idx_total = []
-    for i in range(num_walks):
-        r = np.array(range(len(id_list)))
-        np.random.shuffle(r)
-        # r = list(r)
-        # idx_total+=r
-        for node in [id_list[j] for j in r]:
-            walks.append(node2vec_walk(g, node, alias_nodes, alias_edges, walk_length))
+        walks = []
+        idx_total = []
+        for i in range(num_walks):
+            r = np.array(range(len(id_list)))
+            np.random.shuffle(r)
+            # r = list(r)
+            # idx_total+=r
+            for node in [id_list[j] for j in r]:
+                walks.append(node2vec_walk(g, node, alias_nodes, alias_edges, walk_length))
 
-    model = Word2Vec(walks, size=emb_size, min_count=0, sg=1, iter=iteration)
-    model.save('output_node2vec.model')
+        model = Word2Vec(walks, size=emb_size, min_count=0, sg=1, iter=iteration)
+        model.save('output_node2vec.model')
 
-y = []
-for temp in range(2708):
-    y.append(LABEL[labels[temp]])
-y = np.array(y)
+    y = []
+    for temp in range(2708):
+        y.append(LABEL[labels[temp]])
+    y = np.array(y)
 
-x_train = np.zeros(emb_size)
-x_test = np.zeros(emb_size)
+    x_train = np.zeros(emb_size)
+    x_test = np.zeros(emb_size)
 
-droppoint = 500
+    droppoint = 500
 
-for x in range(droppoint):
-    x_train = np.row_stack((x_train, model[id_list[x]]))
-x_train = np.delete(x_train, [0], axis=0)
-y_train = y[:droppoint]
+    for x in range(droppoint):
+        x_train = np.row_stack((x_train, model[id_list[x]]))
+    x_train = np.delete(x_train, [0], axis=0)
+    y_train = y[:droppoint]
 
-for x in range(droppoint, 1500):
-    x_test = np.row_stack((x_test, model[id_list[x]]))
-x_test = np.delete(x_test, [0], axis=0)
-y_test = y[droppoint:1500]
+    for x in range(droppoint, 1500):
+        x_test = np.row_stack((x_test, model[id_list[x]]))
+    x_test = np.delete(x_test, [0], axis=0)
+    y_test = y[droppoint:1500]
 
-#
-# neigh = ExtraTreesClassifier()
-# neigh.fit(x_train, y_train)
-# preds = neigh.predict(x_test)
-# print (list(preds-y_test).count(0)/500)
+    # neigh = ExtraTreesClassifier()
+    # neigh.fit(x_train, y_train)
+    # preds = neigh.predict(x_test)
+    # print (list(preds-y_test).count(0)/500)
+
+    classifier = LogisticRegression()
+    classifier.fit(x_train, y_train)
+    predictions = classifier.predict(x_test)
+    print('node2vec:')
+    print(list(predictions - y_test).count(0) / 1000)
 
 
-classifier = LogisticRegression()
-classifier.fit(x_train, y_train)
-predictions = classifier.predict(x_test)
-print('node2vec:')
-print(list(predictions - y_test).count(0) / 1000)
+if __name__ == '__main__':
+    main()
