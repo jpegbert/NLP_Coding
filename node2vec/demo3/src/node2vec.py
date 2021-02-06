@@ -21,6 +21,8 @@ class Graph():
 		walk = [start_node]
 
 		while len(walk) < walk_length:
+			# 于采样时需要考虑前面2步访问过的顶点，所以当访问序列中只有1个顶点时，直接使用当前顶
+			# 点和邻居顶点之间的边权作为采样依据。当序列多余2个顶点时，使用文章提到的有偏采样
 			cur = walk[-1]
 			# 对邻居节点排序，目的是和alias table计算时的顺序对应起来
 			cur_nbrs = sorted(G.neighbors(cur))
@@ -58,6 +60,7 @@ class Graph():
 	def get_alias_edge(self, src, dst):
 		'''
 		Get the alias edge setup lists for a given edge.
+		get_alias_edge方法返回的是在上一次访问顶点 t，当前访问顶点为图片时到下一个顶点图片的未归一化转移概率:
 		'''
 		G = self.G
 		p = self.p
@@ -79,6 +82,9 @@ class Graph():
 	def preprocess_transition_probs(self):
 		'''
 		Preprocessing of transition probabilities for guiding the random walks.
+		preprocess_transition_probs分别生成alias_nodes和alias_edges，alias_nodes存储着在每个顶点时决定下一次访问其邻接
+		点时需要的alias表（不考虑当前顶点之前访问的顶点）。alias_edges存储着在前一个访问顶点为t，当前顶点为 图片时决
+		定下一次访问哪个邻接点时需要的alias表。
 		'''
 		G = self.G
 		is_directed = self.is_directed

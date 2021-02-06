@@ -19,6 +19,7 @@ from gensim.models import Word2Vec
 import matplotlib.pyplot as plt
 from scipy import spatial
 from sklearn import cluster
+from sklearn.manifold import TSNE
 from sklearn.metrics import adjusted_rand_score
 from sklearn.model_selection import train_test_split
 import pandas as pd
@@ -96,10 +97,44 @@ def cluster_embedding_result(model):
 	print(y_pred)
 
 
+def get_embeddings(model, g):
+	if model is None:
+		print("model is None")
+		return {}
+
+	embeddings = {}
+	for word in g.graph.nodes():
+		embeddings[word] = model.wv[word]
+	return embeddings
+
+
+"""
+def plot_embeddings(embeddings,):
+    X, Y = read_node_label('../data/wiki/wiki_labels.txt')
+    emb_list = []
+    for k in X:
+        emb_list.append(embeddings[k])
+    emb_list = np.array(emb_list)
+
+    model = TSNE(n_components=2)
+    node_pos = model.fit_transform(emb_list)
+
+    color_idx = {}
+    for i in range(len(X)):
+        color_idx.setdefault(Y[i][0], [])
+        color_idx[Y[i][0]].append(i)
+
+    for c, idx in color_idx.items():
+        plt.scatter(node_pos[idx, 0], node_pos[idx, 1], label=c)
+    plt.legend()
+    plt.show()
+"""
+
+
 def main(args):
-	'''
+	"""
 	Pipeline for representational learning for all nodes in a graph.
-	'''
+	"""
 	nx_G = read_graph()
 	G = node2vec.Graph(nx_G, args.directed, args.p, args.q)
 	G.preprocess_transition_probs()
@@ -130,7 +165,10 @@ def main(args):
 	# 不相似节点组
 	print(cos_similarity(model["17"], model["25"]))
 
-	# 对embedding之后的结果进行kmeans cluster
+	embeddings = get_embeddings(model, nx_G)
+
+	# evaluate_embeddings(embeddings)
+	# plot_embeddings(embeddings)
 
 
 if __name__ == "__main__":
