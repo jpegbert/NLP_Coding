@@ -1,8 +1,7 @@
 from gensim.models import TfidfModel
 import pandas as pd
 import numpy as np
-from pprint import pprint
-import gensim, logging
+import logging
 from gensim.models.doc2vec import Doc2Vec, TaggedDocument
 from gensim.test.utils import get_tmpfile
 from gensim.corpora import Dictionary
@@ -29,7 +28,7 @@ def get_movie_dataset():
     movie_dataset = pd.DataFrame(
         map(
             lambda x: (x[0], x[1], x[2], x[2]+x[3]) if x[3] is not np.nan else (x[0], x[1], x[2], []), ret.itertuples())
-        , columns=["movieId", "title", "genres","tags"]
+        , columns=["movieId", "title", "genres", "tags"]
     )
 
     movie_dataset.set_index("movieId", inplace=True)
