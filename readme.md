@@ -1,1 +1,2 @@
-![wx](../img/readme/wx.png)
+![wx](img/readme/wx.png)
+
