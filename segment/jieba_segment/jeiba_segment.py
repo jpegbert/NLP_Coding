@@ -87,10 +87,10 @@ def paralell():
 
 
 def main():
-    # basic_demo()
-    # cixingfenxi_demo() # 词性分析
-    # keyword_extract() # 关键词抽取
-    # fenci() # 分词
+    basic_demo()
+    cixingfenxi_demo() # 词性分析
+    keyword_extract() # 关键词抽取
+    fenci() # 分词
     load_dict() # 加载自定义词典
     paralell() # 并行分词
 
