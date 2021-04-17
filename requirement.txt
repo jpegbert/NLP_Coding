@@ -6,3 +6,7 @@ pip install plotly -i https://pypi.tuna.tsinghua.edu.cn/simple/
 pip install bs4 -i https://pypi.tuna.tsinghua.edu.cn/simple/
 pip install networkx -i https://pypi.tuna.tsinghua.edu.cn/simple/
 pip install prettytable -i https://pypi.tuna.tsinghua.edu.cn/simple/
+pip install dgl -i https://pypi.tuna.tsinghua.edu.cn/simple/
+pip install ogb -i https://pypi.tuna.tsinghua.edu.cn/simple/
+pip install torchtext==0.6.0 -i https://pypi.tuna.tsinghua.edu.cn/simple/
+pip install spacy -i https://pypi.tuna.tsinghua.edu.cn/simple/
