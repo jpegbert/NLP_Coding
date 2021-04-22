@@ -10,3 +10,4 @@ pip install dgl -i https://pypi.tuna.tsinghua.edu.cn/simple/
 pip install ogb -i https://pypi.tuna.tsinghua.edu.cn/simple/
 pip install torchtext==0.6.0 -i https://pypi.tuna.tsinghua.edu.cn/simple/
 pip install spacy -i https://pypi.tuna.tsinghua.edu.cn/simple/
+pip install transformers -i https://pypi.tuna.tsinghua.edu.cn/simple/
