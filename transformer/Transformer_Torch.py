@@ -46,7 +46,7 @@ tgt_len = 6 # dec_input(=dec_output) max sequence length
 # Transformer Parameters
 d_model = 512  # Embedding Size
 d_ff = 2048 # FeedForward dimension
-d_k = d_v = 64  # dimension of K(=Q), V
+d_k = d_v = 64  # dimension of K(=Q), V，V的维度与K和Q不同是可以的，但是K和Q的维度一定要一样
 n_layers = 6  # number of Encoder of Decoder Layer
 n_heads = 8  # number of heads in Multi-Head Attention
 
@@ -92,7 +92,7 @@ class PositionalEncoding(nn.Module):
         pe = torch.zeros(max_len, d_model)
         position = torch.arange(0, max_len, dtype=torch.float).unsqueeze(1)
         div_term = torch.exp(torch.arange(0, d_model, 2).float() * (-math.log(10000.0) / d_model))
-        pe[:, 0::2] = torch.sin(position * div_term)
+        pe[:, 0::2] = torch.sin(position * div_term) # 从0开始到最后，间隔2个取一个值
         pe[:, 1::2] = torch.cos(position * div_term)
         pe = pe.unsqueeze(0).transpose(0, 1)
         self.register_buffer('pe', pe)
@@ -141,6 +141,7 @@ class ScaledDotProductAttention(nn.Module):
         attn_mask: [batch_size, n_heads, seq_len, seq_len]
         '''
         scores = torch.matmul(Q, K.transpose(-1, -2)) / np.sqrt(d_k) # scores : [batch_size, n_heads, len_q, len_k]
+        # 这里把无意义的位置填充为负无穷小，这样计算softmax的时候不会影响计算结果
         scores.masked_fill_(attn_mask, -1e9) # Fills elements of self tensor with value where mask is True.
         
         attn = nn.Softmax(dim=-1)(scores)
