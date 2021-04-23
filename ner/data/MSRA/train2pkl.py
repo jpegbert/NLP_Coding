@@ -2,6 +2,7 @@ import codecs
 import re
 import pandas as pd
 import numpy as np
+import collections
 
 
 def wordtag():
@@ -86,12 +87,23 @@ for line in input_data.readlines():
         if num_not_o!=0:
             datas.append(linedata)
             labels.append(linelabel)
-            
+
+
+def flatten(x):
+    result = []
+    for el in x:
+        if isinstance(x, collections.Iterable) and not isinstance(el, str):
+            result.extend(flatten(el))
+        else:
+            result.append(el)
+    return result
+
+
 input_data.close()    
 print(len(datas))
 print(len(labels))
     
-from compiler.ast import flatten
+# from compiler.ast import flatten
 all_words = flatten(datas)
 sr_allwords = pd.Series(all_words)
 sr_allwords = sr_allwords.value_counts()
@@ -104,6 +116,8 @@ word2id["unknow"] = len(word2id)+1
 
 
 max_len = 50
+
+
 def X_padding(words):
     """把 words 转为 id 形式，并自动补全位 max_len 长度。"""
     ids = list(word2id[words])
@@ -112,12 +126,14 @@ def X_padding(words):
     ids.extend([0]*(max_len-len(ids))) # 短则补全
     return ids
 
+
 def y_padding(ids):
     """把 tags 转为 id 形式， 并自动补全位 max_len 长度。"""
     if len(ids) >= max_len:  # 长则弃掉
         return ids[:max_len]
     ids.extend([0]*(max_len-len(ids))) # 短则补全
     return ids
+
 
 df_data = pd.DataFrame({'words': datas, 'tags': labels}, index=range(len(datas)))
 df_data['x'] = df_data['words'].apply(X_padding)

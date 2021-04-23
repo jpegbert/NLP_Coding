@@ -1,10 +1,19 @@
-#!/usr/bin/python
-# -*- coding: UTF-8 -*-
-
 import codecs
 import pandas as pd
 import numpy as np
 import re
+import collections
+
+
+def flatten(x):
+    result = []
+    for el in x:
+        if isinstance(x, collections.Iterable) and not isinstance(el, str):
+            result.extend(flatten(el))
+        else:
+            result.append(el)
+    return result
+
 
 def data2pkl():
     datas = list()
@@ -31,15 +40,14 @@ def data2pkl():
             labels.append(linelabel)
 
     input_data.close()
-    print len(datas),tags
-    print len(labels)
-    from compiler.ast import flatten
+    print(len(datas),tags)
+    print(len(labels))
+    # from compiler.ast import flatten
     all_words = flatten(datas)
     sr_allwords = pd.Series(all_words)
     sr_allwords = sr_allwords.value_counts()
     set_words = sr_allwords.index
     set_ids = range(1, len(set_words)+1)
-
 
     tags = [i for i in tags]
     tag_ids = range(len(tags))
@@ -49,7 +57,7 @@ def data2pkl():
     id2tag = pd.Series(tags, index=tag_ids)
 
     word2id["unknow"] = len(word2id)+1
-    print word2id
+    print(word2id)
     max_len = 60
     def X_padding(words):
         ids = list(word2id[words])
@@ -71,7 +79,7 @@ def data2pkl():
     y = np.asarray(list(df_data['y'].values))
 
     from sklearn.model_selection import train_test_split
-    x_train,x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=43)
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=43)
     x_train, x_valid, y_train, y_valid = train_test_split(x_train, y_train,  test_size=0.2, random_state=43)
 
     
@@ -88,10 +96,9 @@ def data2pkl():
 	    pickle.dump(y_test, outp)
 	    pickle.dump(x_valid, outp)
 	    pickle.dump(y_valid, outp)
-    print '** Finished saving the data.'
+    print('** Finished saving the data.')
     
-    
-    
+
 def origin2tag():
     input_data = codecs.open('./origindata.txt','r','utf-8')
     output_data = codecs.open('./wordtag.txt','w','utf-8')
