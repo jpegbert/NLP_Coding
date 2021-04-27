@@ -1,8 +1,8 @@
 import pickle
 import torch
 import torch.optim as optim
-from ner.pytorch.BiLSTM_CRF import BiLSTM_CRF
-from ner.pytorch.resultCal import calculate
+from ner.demo.pytorch.BiLSTM_CRF import BiLSTM_CRF
+from ner.demo.pytorch.resultCal import calculate
 
 
 with open('../data/boson/Bosondata.pkl', 'rb') as inp:

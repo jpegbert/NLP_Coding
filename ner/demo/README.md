@@ -25,7 +25,7 @@ data文件夹中有三个开源数据集可供使用，玻森数据 (https://bos
 ### 测试训练好的模型
 使用 `python train.py test` 进行测试，会自动读取model文件夹中最新的模型，输入中文测试即可，测试结果好坏根据模型的准确度而定。
 
-![wx](./img/test.png)
+![wx](img/test.png)
 
 ### 文件级别实体抽取
 使用 `python train.py input_file output_file` 进行文件级实体抽取。
@@ -33,7 +33,7 @@ data文件夹中有三个开源数据集可供使用，玻森数据 (https://bos
 可以自动读取model文件夹中最新的模型，将`input_file`中的实体抽取出来写入`output_file`中。先是原句，然后是实体类型及实体（可按照需要修改）。
 
 如 `python train.py test1.txt res.txt` , res.txt内容如下：
-![wx](./img/test2.png)
+![wx](img/test2.png)
 
 
 

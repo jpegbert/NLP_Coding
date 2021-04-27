@@ -1,9 +1,9 @@
 import pickle
 import sys
 import tensorflow as tf
-from ner.tensorflow.Batch import BatchGenerator
-from ner.tensorflow.bilstm_crf import Model
-from ner.tensorflow.utils import *
+from ner.demo.tensorflow.Batch import BatchGenerator
+from ner.demo.tensorflow.bilstm_crf import Model
+from ner.demo.tensorflow.utils import *
 
 
 with open('../data/renMinRiBao/renmindata.pkl', 'rb') as inp:
