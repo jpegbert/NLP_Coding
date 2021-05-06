@@ -27,10 +27,9 @@ class Model():
         self.checkpoint_path = "./model/ner.ckpt"
         self.initializer = initializers.xavier_initializer()
 
-        self.is_training = True if ARGS.entry=="train" else False
+        self.is_training = True if ARGS.entry == "train" else False
 
     def __creat_model(self):
-
         # bert embbeding layer
         self._init_bert_placeholder()
         self.bert_layer()
@@ -83,8 +82,10 @@ class Model():
         self.nums_steps = tf.shape(self.input_ids)[-1]
 
     def bert_layer(self):
+        # 加载bert配置文件
         bert_config = modeling.BertConfig.from_json_file(ARGS.bert_config)
 
+        # 创建bert模型
         model = modeling.BertModel(
             config=bert_config,
             is_training=self.is_training,
@@ -93,6 +94,7 @@ class Model():
             token_type_ids=self.segment_ids,
             use_one_hot_embeddings=False
         )
+        # 加载词向量
         self.embedded = model.get_sequence_output()
         self.model_inputs = tf.nn.dropout(
             self.embedded, self.dropout
@@ -137,14 +139,14 @@ class Model():
 
     def logits_layer(self):
         with tf.variable_scope("hidden"):
-            w = tf.get_variable("W", shape=[self.lstm_dim*2, self.lstm_dim],
+            w = tf.get_variable("W", shape=[self.lstm_dim * 2, self.lstm_dim],
                                 dtype=tf.float32, initializer=self.initializer
                                 )
             b = tf.get_variable("b", shape=[self.lstm_dim], dtype=tf.float32,
                                 initializer=self.initializer
                                 )
 
-            output = tf.reshape(self.lstm_outputs, shape=[-1, self.lstm_dim*2])
+            output = tf.reshape(self.lstm_outputs, shape=[-1, self.lstm_dim * 2])
             hidden = tf.tanh(tf.nn.xw_plus_b(output, w, b))
             self.hidden = hidden
 
@@ -186,8 +188,7 @@ class Model():
         correct_prediction = tf.equal(
             tf.argmax(self.logits, 2), tf.cast(self.targets, tf.int64))
         self.accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
-        num_train_steps = int(
-            self.train_length / self.batch_size * self.max_epoch)
+        num_train_steps = int(self.train_length / self.batch_size * self.max_epoch)
         num_warmup_steps = int(num_train_steps * 0.1)
         self.train_op = create_optimizer(
             self.loss, self.learning_rate, num_train_steps, num_warmup_steps, False
@@ -198,8 +199,7 @@ class Model():
         with tf.variable_scope("optimizer"):
             optimizer = tf.train.AdamOptimizer()
 
-            correct_prediction = tf.equal(
-                tf.argmax(self.logits, 2), tf.cast(self.targets, tf.int64))
+            correct_prediction = tf.equal(tf.argmax(self.logits, 2), tf.cast(self.targets, tf.int64))
             self.accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
             tvars = tf.trainable_variables()
