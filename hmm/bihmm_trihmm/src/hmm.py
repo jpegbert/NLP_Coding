@@ -1,6 +1,4 @@
-import math
-from hmm.src import const
-from hmm.src.processing import *
+from hmm.bihmm_trihmm.src.processing import *
 
 
 '''
@@ -231,7 +229,7 @@ class TriHMM(BiHMM):
 					trace_tmp = -1
 					for idx_pos2, val_pos2 in enumerate(self.postags):
 						for idx_pos3, val_pos3 in enumerate(self.postags):
-							r = score[idx_pos3][idx_pos2][idx-1]*self.calc_prob(val_pos3, val_pos2 ,val_pos)
+							r = score[idx_pos3][idx_pos2][idx-1]*self.calc_prob(val_pos3, val_pos2,val_pos)
 							if r > tmp:
 								tmp = r
 								trace_tmp = idx_pos3

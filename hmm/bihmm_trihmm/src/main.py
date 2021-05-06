@@ -1,5 +1,5 @@
-from hmm.src.dataset import load_data
-from hmm.src.hmm import *
+from hmm.bihmm_trihmm.src.dataset import load_data
+from hmm.bihmm_trihmm.src.hmm import *
 
 
 datas, tags = load_data('./corpus/toy/train.txt')

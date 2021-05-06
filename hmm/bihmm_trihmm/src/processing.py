@@ -1,4 +1,4 @@
-from hmm.src import const
+from hmm.bihmm_trihmm.src import const
 
 """
 句子的处理，字典的构建
